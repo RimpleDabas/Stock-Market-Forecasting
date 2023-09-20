@@ -60,26 +60,26 @@ column_select = st.selectbox(":orange[Select column for forecasting]",get_data.c
 get_data =get_data[['Date',column_select]]
 st.write(':orange[Selected Data]')
 st.write(get_data)
-
+#check for the stationarity
 st.header(":orange[Check if data is stationary]")
 st.write(adfuller(get_data[column_select])[1]<0.05)
 
 st.header(':orange[Decomposition]')
 decompose = seasonal_decompose(get_data[column_select],model='additive',period= 12)
 # st.write(decompose.plot())
-
+#decompose to get seasonality and trends
 st.write(":orange[Decomposed Plots]")
 st.plotly_chart(px.line(x= get_data["Date"],y =decompose.trend,title='Trend',width=1200,height=400,labels={"x":"Date",'y':"Price"}).update_traces(line_color = 'Blue'))
 st.plotly_chart(px.line(x= get_data["Date"],y =decompose.seasonal,title='Seasonality',width=1200,height=400,labels={"x":"Date",'y':"Price"}).update_traces(line_color = 'Green'))
 st.plotly_chart(px.line(x= get_data["Date"],y =decompose.resid,title='Residuals',width=1200,height=400,labels={"x":"Date",'y':"Price"}).update_traces(line_color = 'Red',line_dash='dot'))
-p = st.slider(':orange[Select the value of p]',0,5,2)
-d= st.slider(':orange[Select the value of d]',0,5,1)
-q = st.slider(':orange[Select the value of q]',0,5,2)
+p = st.slider(':orange[Select the value of p]',0,3,1)
+d= st.slider(':orange[Select the value of d]',0,3,1)
+q = st.slider(':orange[Select the value of q]',0,3,1)
 seasonal_order  = st.number_input(':orange[Select the value of seasonal p]',0,24,12)
 model = sm.tsa.statespace.SARIMAX(get_data[column_select],order=(p,d,q),seasonal_order= (p,d,q,seasonal_order))
 model= model.fit()
-st.header(':orange[Model Summary]')
-st.write(model.summary())
+#st.header(':orange[Model Summary]')
+#st.write(model.summary())
 forecast = st.number_input(':orange[Select days for forcasting]',1,365,10)
 predict = model.get_prediction(start=len(get_data),end = len(get_data)+forecast)
 predict = predict.predicted_mean
