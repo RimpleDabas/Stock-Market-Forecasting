@@ -1,8 +1,7 @@
+#import dependencies
 import streamlit as st
 import pandas as pd 
-import numpy as np 
 import yfinance as yf 
-import matplotlib.pyplot as plt 
 import seaborn as sns 
 import plotly.graph_objects as go 
 import plotly.express as px 
@@ -11,6 +10,7 @@ from datetime import date, timedelta
 from statsmodels.tsa.seasonal import seasonal_decompose
 from statsmodels.tsa.stattools import adfuller
 import statsmodels.api as sm 
+#add title and color
 app = ":orange[Stock Market App]"
 st.title(app)
 st.subheader(':orange[Select stock]')
@@ -37,17 +37,23 @@ def set_bg_hack_url():
 set_bg_hack_url()
 #st.image('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkzFTa0bjy9V7Kllf8INArhrmpsrLz7gQx2Q&usqp=CAU')
 st.sidebar.header(":orange[Select parameters]")
+#add start and end date
 start_date = st.sidebar.date_input(":orange[Start Date]",date(2022,1,1))
 end_date = st.sidebar.date_input(":orange[End Date]",date(2022,12,31))
+#add ticker symbols
 ticker_symbols= ["AAPL", "AMZN", "MSFT", "GOOGL", "META","TSLA", "NFLX", "JPM", "NVDA", "DIS", "V", "MA", "BRK.A", "PYPL", "PG", "VZ", "T", "KO", "BA"]
 ticker =st.sidebar.selectbox(':orange[Make selection]',ticker_symbols)
+#pull data from yahoo finance
 get_data = yf.download(ticker,start = start_date,end = end_date)
+#reset indices to get date in the column
 get_data.insert(0,"Date",get_data.index,True)
 get_data.reset_index(drop = True,inplace= True)
+#print and plot the data
 st.write(":orange[Data From]",start_date,":orange[to]",end_date)
 st.write(get_data)
 st.header(":orange[Visualization]")
 st.subheader(":orange[Plot]")
+#get column names to make selection in the next step
 figure = px.line(get_data , x = "Date", y = get_data.columns, title= "Closing price",width=1000,height=600)
 st.plotly_chart(figure)
 column_select = st.selectbox(":orange[Select column for forecasting]",get_data.columns[1:])
