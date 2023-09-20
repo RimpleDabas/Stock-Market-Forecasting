@@ -2,10 +2,10 @@
 import streamlit as st
 import pandas as pd 
 import yfinance as yf 
-import seaborn as sns 
+
 import plotly.graph_objects as go 
 import plotly.express as px 
-import datetime 
+import datetime
 from datetime import date, timedelta
 from statsmodels.tsa.seasonal import seasonal_decompose
 from statsmodels.tsa.stattools import adfuller
